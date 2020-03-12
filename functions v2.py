@@ -36,9 +36,10 @@ def initialize_strategy_list():
                         strategy_list.append(new_strategy)
     return strategy_list
 
+
 # Defining the constants:
-points_gained_so_far = 0
-time_spent_so_far = 0  # s
+points_gained_so_far = 120
+time_spent_so_far = 400  # s
 speed = 30  # m/s
 speed_knots = speed * 1.9438  # knots
 speed_cargo = 20  # m/s
@@ -74,7 +75,6 @@ speed_trial_length = calculate_route_length(route_speed_trial)
 # Initializing lists that will contain the points gained by each strategy for the different stages:
 total_points = []
 strategy_list = initialize_strategy_list()
-
 
 # Calculating the points gained by each strategy:
 i = 0
@@ -135,6 +135,64 @@ for strategy in strategy_list:
 max_value = max(total_points)
 max_index = total_points.index(max_value)
 best_strategy = strategy_list[max_index]
+
+# Saving the best strategy in a txt file:
+# Start with the longer routes because those have the best point/unit time ratio
+frame = 0
+nav_command = 16
+file = open("mission.txt", "w")
+file.write('QGC WPL 110\n')
+if best_strategy[2] != 0:
+    i = 0
+    for element in route_C:
+        x = element[0]
+        y = element[1]
+        z = 30  # later change to element[2]
+        file.write(str(i) + '\t' + '0\t' + str(frame) + '\t' + str(nav_command) + '\t' + '0\t0\t0\t0\t' + str(x) +
+                   '\t' + str(y) + '\t' + str(z) + '\t' + '0\n')
+        i += 1
+    # Adding the last WP again as a dummy WP:
+    file.write(str(i) + '\t' + '0\t' + str(frame) + '\t' + str(nav_command) + '\t' + '0\t0\t0\t0\t' + str(x) +
+               '\t' + str(y) + '\t' + str(z) + '\t' + '0\n')
+elif best_strategy[1] != 0:
+    i = 0
+    for element in route_B:
+        x = element[0]
+        y = element[1]
+        z = 30  # later change to element[2]
+        file.write(str(i) + '\t' + '0\t' + str(frame) + '\t' + str(nav_command) + '\t' + '0\t0\t0\t0\t' + str(x) +
+                   '\t' + str(y) + '\t' + str(z) + '\t' + '0\n')
+        i += 1
+    # Adding the last WP again as a dummy WP:
+    file.write(str(i) + '\t' + '0\t' + str(frame) + '\t' + str(nav_command) + '\t' + '0\t0\t0\t0\t' + str(x) +
+               '\t' + str(y) + '\t' + str(z) + '\t' + '0\n')
+elif best_strategy[0] != 0:
+    i = 0
+    for element in route_A:
+        x = element[0]
+        y = element[1]
+        z = 30  # later change to element[2]
+        file.write(str(i) + '\t' + '0\t' + str(frame) + '\t' + str(nav_command) + '\t' + '0\t0\t0\t0\t' + str(x) +
+                   '\t' + str(y) + '\t' + str(z) + '\t' + '0\n')
+        i += 1
+    # Adding the last WP again as a dummy WP:
+    file.write(str(i) + '\t' + '0\t' + str(frame) + '\t' + str(nav_command) + '\t' + '0\t0\t0\t0\t' + str(x) +
+               '\t' + str(y) + '\t' + str(z) + '\t' + '0\n')
+elif best_strategy[3] != 0:
+    i = 0
+    for element in route_speed_trial:
+        x = element[0]
+        y = element[1]
+        z = 30  # later change to element[2]
+        file.write(str(i) + '\t' + '0\t' + str(frame) + '\t' + str(nav_command) + '\t' + '0\t0\t0\t0\t' + str(x) +
+                   '\t' + str(y) + '\t' + str(z) + '\t' + '0\n')
+        i += 1
+    # Adding the last WP again as a dummy WP:
+    file.write(str(i) + '\t' + '0\t' + str(frame) + '\t' + str(nav_command) + '\t' + '0\t0\t0\t0\t' + str(x) +
+               '\t' + str(y) + '\t' + str(z) + '\t' + '0\n')
+# elif best_strategy[4] != 0:
+# FIGURE SOMETHING OUT FOR AREA SEARCH --> GRID?
+
 
 # test:
 print(route_A_length)
